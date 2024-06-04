@@ -1,5 +1,6 @@
 package com.safevax.vaccinationApp.controller;
 
+import com.safevax.vaccinationApp.Dto.Reponse.AppointmentResponse;
 import com.safevax.vaccinationApp.model.Appointment;
 import com.safevax.vaccinationApp.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/appointment")
 public class AppointmentController {
-
     @Autowired
     AppointmentService appointmentService;
     @PostMapping("/Book")
     public ResponseEntity bookAppointment(@RequestParam("pId") int patientId,@RequestParam("dId") int doctorId){
         try {
-           Appointment appointmentBooked = appointmentService.bookAppointment(patientId, doctorId);
+           AppointmentResponse appointmentBooked = appointmentService.bookAppointment(patientId, doctorId);
            return new ResponseEntity<>(appointmentBooked, HttpStatus.CREATED);
         }
         catch(Exception e){

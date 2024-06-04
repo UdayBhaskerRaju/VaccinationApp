@@ -1,5 +1,6 @@
 package com.safevax.vaccinationApp.controller;
 
+import com.safevax.vaccinationApp.Dto.Reponse.DoseResponse;
 import com.safevax.vaccinationApp.Enum.VaccineBrand;
 import com.safevax.vaccinationApp.exception.PatientNotFoundException;
 import com.safevax.vaccinationApp.model.Dose;
@@ -15,7 +16,7 @@ public class DoseController {
     @Autowired
     DoseService doseService;
     @PostMapping("/vaccinate")
-    public Dose addDose(@RequestParam("id") int patientId, @RequestParam("brand") VaccineBrand vaccineBrand) throws PatientNotFoundException {
+    public DoseResponse addDose(@RequestParam("id") int patientId, @RequestParam("brand") VaccineBrand vaccineBrand) throws PatientNotFoundException {
         return doseService.addDose(patientId,vaccineBrand);
     }
 }

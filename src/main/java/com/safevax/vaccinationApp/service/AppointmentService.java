@@ -1,5 +1,7 @@
 package com.safevax.vaccinationApp.service;
 
+import com.safevax.vaccinationApp.Dto.Reponse.AppointmentResponse;
+import com.safevax.vaccinationApp.Dto.Reponse.PatientResponse;
 import com.safevax.vaccinationApp.Enum.AppointmentStatus;
 import com.safevax.vaccinationApp.exception.DoctorNotFoundException;
 import com.safevax.vaccinationApp.exception.PatientNotFoundException;
@@ -20,12 +22,11 @@ public class AppointmentService {
 
   @Autowired
     PatientRepository patientRepository;
-
   @Autowired
     DoctorRepository doctorRepository;
   @Autowired
     AppointmentRepository appointmentRepository;
-    public Appointment bookAppointment(int patientId, int doctorId) {
+    public AppointmentResponse bookAppointment(int patientId, int doctorId) {
 
         // check weather the patient record valid or not
         Optional<Patient> patientOptional = patientRepository.findById(patientId);
@@ -45,13 +46,31 @@ public class AppointmentService {
         Doctor doctor = doctorOptional.get();
 
         //Book the appointment doctor is available
-
         Appointment appointment = new Appointment();
-
         appointment.setAppointmentId(String.valueOf(UUID.randomUUID()));
         appointment.setStatus(AppointmentStatus.BOOKED);
         appointment.setDoctor(doctor);
         appointment.setPatient(patient);
-       return  appointmentRepository.save(appointment);
+
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        //Model to dto response
+        AppointmentResponse appointmentResponse = new AppointmentResponse();
+        appointmentResponse.setAppointmentId(savedAppointment.getAppointmentId());
+        appointmentResponse.setDateOfAppointment(savedAppointment.getDateOfAppointment());
+        appointmentResponse.setStatus(savedAppointment.getStatus());
+        appointmentResponse.setDoctorName(savedAppointment.getDoctor().getName());
+
+        Patient savedPatient = savedAppointment.getPatient();
+
+        PatientResponse patientResponse = new PatientResponse();
+        patientResponse.setName(savedPatient.getName());
+        patientResponse.setVaccinated(savedPatient.isVaccinated());
+        patientResponse.setEmailId(savedPatient.getEmailId());
+
+        appointmentResponse.setPatientResponse(patientResponse);
+
+        return appointmentResponse;
+
     }
 }
